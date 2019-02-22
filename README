@@ -1,0 +1,5 @@
+bcftools mpileup *.bam --fasta-ref ../hs37d5.fa -Ob -o full.bcf --threads 4
+bcftools call -c full.bcf |bcftools view -i 'AF1>0.3'|grep -v -P "^#"|cut -f1,2 >rg
+bcftools view full.bcf |grep -P "^#" -v|shuf -n16000 |cut -f1,2 >>rg
+sort -n  -k1,2 rg |uniq -u >rg2
+bcftools mpileup *.bam --fasta-ref ../hs37d5.fa -Ob -o small2.bcf --threads 4 -R rg2
